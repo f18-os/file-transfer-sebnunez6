@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
-import sys
+import sys, re, socket, os 
 sys.path.append("../lib")       # for params
-import  re, socket, params
+import params
 
 switchesVarDefaults = (
     (('-l', '--listenPort') ,'listenPort', 50001),
@@ -21,18 +21,21 @@ lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # listener socket
 bindAddr = ("127.0.0.1", listenPort)
 lsock.bind(bindAddr)
 lsock.listen(5)
-print("listening on:", bindAddr)
-
-sock, addr = lsock.accept()
-
-print("connection rec'd from", addr)
-
-
-from framedSock import framedSend, framedReceive
-
 while True:
-    payload = framedReceive(sock, debug)
-    if debug: print("rec'd: ", payload)
-    if not payload:
+    print("listening on:", bindAddr)
+
+    sock, addr = lsock.accept()
+    rc = os.fork()
+    if rc == 0:
+        print("connection rec'd from", addr)
+
+
+        from framedSock import framedSend, framedReceive
+
+        while True:
+            payload = framedReceive(sock, debug)
+            if debug: print("rec'd: ", payload)
+            if not payload:
+                break
+            framedSend(sock, payload, debug)
         break
-    framedSend(sock, payload, debug)

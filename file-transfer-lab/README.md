@@ -6,7 +6,7 @@ key word "end" is sent to the server. The server will then close the file
 and the child will terminate. Any "e" received are new line characters 
 that have been replaced to avoid errors with special characters. They will
 be translated back to new line characters once they have been 
-received.
+received. Any file the Server receives will be located inside the Server Folder.
 
 ##File Client
 Option is given whether the user wants to or doesn't want to use the stammer

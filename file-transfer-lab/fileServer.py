@@ -2,7 +2,7 @@
 import sys, re, socket, os 
 sys.path.append("../lib")       # for params
 import params
-os.chdir("Server")
+os.chdir("Server") #changes os to Server Directory for Files
 switchesVarDefaults = (
     (('-l', '--listenPort') ,'listenPort', 50001),
     (('-d', '--debug'), "debug", False), # boolean (set if present)

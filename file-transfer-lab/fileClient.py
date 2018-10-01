@@ -7,9 +7,13 @@ sys.path.append("../lib")       # for params
 import params
 
 from framedSock import framedSend, framedReceive
-
+port = input("would you like to use the stammer proxy? (y/n)\n")
+if 'y' in port:
+    port = "50000"
+else:
+    port = "50001"
 switchesVarDefaults = (
-    (('-s', '--server'), 'server', "127.0.0.1:50001"),
+    (('-s', '--server'), 'server', "127.0.0.1:" + port),
     (('-d', '--debug'), "debug", False), # boolean (set if present)
     (('-?', '--usage'), "usage", False), # boolean (set if present)
     )
@@ -66,10 +70,12 @@ try:
 except FileNotFoundError:
     print("file not found exiting")
     sys.exit(0)
-
-#sends file information to server
-framedSend(s,b':' +inputFile.strip().encode('utf-8') + b"\'start\'")
-
+try:
+    #sends file information to server
+    framedSend(s,b':' +inputFile.strip().encode('utf-8') + b"\'start\'")
+except BrokenPipeError:
+    print("disconnected start again")
+    sys.exit(0)
 #Gets rid of new line character due to sending error by replacing it with 'e'
 data = data.replace(b"\n", b"\'e\'")
 
@@ -77,13 +83,21 @@ data = data.replace(b"\n", b"\'e\'")
 while len(data) >= 100:
     line = data[:100]
     data = data[100:]
-    framedSend(s,b":"+line,debug)
+    try:
+        framedSend(s,b":"+line,debug)
+    except BrokenPipeError:
+        print("disconnected start again")
+        sys.exit(0)
 
 #sends left over bits
 if len(data) > 0:
     framedSend(s,b":"+data,debug)
 
-#tells server file has ended
-framedSend(s,b":\'end\'")
+try:
+    #tells server file has ended
+    framedSend(s,b":\'end\'")
+except BrokenPipeError:
+    print("disconnected start again")
+    sys.exit(0)
 
 

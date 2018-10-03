@@ -9,6 +9,7 @@ switchesVarDefaults = (
     (('-?', '--usage'), "usage", False), # boolean (set if present)
     )
 
+
 progname = "echoserver"
 paramMap = params.parseParams(switchesVarDefaults)
 
@@ -60,8 +61,7 @@ while True:
             #error handling
             try:
                 payload = framedReceive(sock, debug)
-                #special characters could not be passed new lines where replaced with 'e'. Converting them back
-                payload = payload.replace(b"\'e\'",b"\n")
+              
             except:
                 pass
 

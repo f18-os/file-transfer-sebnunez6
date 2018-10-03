@@ -12,11 +12,12 @@ if 'y' in port:
     port = "50000"
 else:
     port = "50001"
+
 switchesVarDefaults = (
     (('-s', '--server'), 'server', "127.0.0.1:" + port),
     (('-d', '--debug'), "debug", False), # boolean (set if present)
     (('-?', '--usage'), "usage", False), # boolean (set if present)
-    )
+)
 
 
 progname = "fileClient"
@@ -76,8 +77,6 @@ try:
 except BrokenPipeError:
     print("disconnected start again")
     sys.exit(0)
-#Gets rid of new line character due to sending error by replacing it with 'e'
-data = data.replace(b"\n", b"\'e\'")
 
 #Sends 100 bits at a time to server
 while len(data) >= 100:
